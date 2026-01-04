@@ -32,7 +32,10 @@ public class InputHandler : Singleton<InputHandler>, PlayerControls.IPlayerActio
     public void OnDodge(InputAction.CallbackContext context)
     {
         if (context.performed)
+        {
             onDodgePressed?.Invoke();
+            Debug.Log("Dodge Pressed");
+        }
     }
 
     public void OnInteract(InputAction.CallbackContext context)

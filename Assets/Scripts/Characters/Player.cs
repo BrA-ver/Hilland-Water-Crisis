@@ -6,7 +6,19 @@ public class Player : Character
     Vector2 moveInput;
     Vector3 moveDir;
     PlayerCamera cam;
-    
+
+    private StateMachine stateMachine;
+
+    public Vector3 MoveDir => moveDir;
+    public bool isDodging;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        stateMachine = GetComponent<StateMachine>();
+        
+    }
+
 
     protected override void Start()
     {
@@ -14,44 +26,21 @@ public class Player : Character
         cam = PlayerCamera.instance;
         cam.SetPlayer(this);
 
-        InputHandler.Instance.onJumpPressed += OnJump;
-        InputHandler.Instance.onDodgePressed += OnDodge;
         
+        InputHandler.Instance.onDodgePressed += OnDodge;
+
+        stateMachine.SwitchState(new PlayerFreeState(this));
     }
 
     private void OnDisable()
     {
-        InputHandler.Instance.onJumpPressed -= OnJump;
+        
         InputHandler.Instance.onDodgePressed -= OnDodge;
     }
 
     
 
-    protected override void Update()
-    {
-        base.Update();
-        movement.IsGrounded(onGround);
-
-        HandleMoveInput();
-        movement.Move(moveDir);
-
-        
-        
-    }
-
-    protected override void FixedUpdate()
-    {
-        if (!movement.Dashing)
-        {
-            base.FixedUpdate();
-        }
-        else
-        {
-            movement.HandleDash();
-        }
-    }
-
-    void HandleMoveInput()
+    public void HandleMoveInput()
     {
         moveInput = InputHandler.Instance.MoveInput;
         moveDir = cam.transform.forward * moveInput.y;
@@ -60,7 +49,7 @@ public class Player : Character
         moveDir.Normalize();
     }
 
-    private void OnJump()
+    public void Jump()
     {
         if (onGround)
         {
@@ -70,13 +59,18 @@ public class Player : Character
 
     private void OnDodge()
     {
-        if (!onGround) return;
+        
+        Debug.Log("Dash Called");
+        if (!onGround || isDodging) return;
         if (movement.Dashing) return;
 
-        Vector3 dashDir = moveDir;
-        if (moveDir.magnitude < 0.1f)
-            dashDir = transform.forward;
+        isDodging = true;
+        stateMachine.SwitchState(new PlayerDodgeState(this));
+    }
 
-        movement.Dash(dashDir);
+    public void FinishDodge()
+    {
+        isDodging = false;
+        stateMachine.SwitchState(new PlayerFreeState(this));
     }
 }

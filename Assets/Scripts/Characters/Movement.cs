@@ -124,6 +124,7 @@ public class Movement : MonoBehaviour
 
     public void Dash(Vector3 dashDir)
     {
+        Debug.Log(dashDir);
         dashing = true;
         this.dashDir = dashDir;
     }

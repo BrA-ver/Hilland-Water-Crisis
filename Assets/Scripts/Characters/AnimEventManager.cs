@@ -8,4 +8,9 @@ public class AnimEventManager : MonoBehaviour
     {
         player.FinishDodge();
     }
+
+    public void FinishAttack()
+    {
+        player.FinishAttack();
+    }
 }

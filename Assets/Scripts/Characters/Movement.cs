@@ -25,7 +25,13 @@ public class Movement : MonoBehaviour
     [SerializeField] float dashTime = 0.1f;
     float dashCounter;
     bool dashing = false;
-    Vector3 dashDir; 
+    Vector3 dashDir;
+
+    [Header("Dive")]
+    [SerializeField] float diveSpeed = 10f;
+    [SerializeField] float divehTime = 0.1f;
+    float diveCounter;
+    bool diving = false;
 
     [SerializeField] bool debug;
     [SerializeField] float activeSpeed;
@@ -127,5 +133,11 @@ public class Movement : MonoBehaviour
         Debug.Log(dashDir);
         dashing = true;
         this.dashDir = dashDir;
+    }
+
+    public void Dive()
+    {
+        diving = true;
+        yVelocity.y = -diveSpeed;
     }
 }

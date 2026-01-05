@@ -10,6 +10,7 @@ public class InputHandler : Singleton<InputHandler>, PlayerControls.IPlayerActio
 
     public event Action onJumpPressed;
     public event Action onDodgePressed;
+    public event Action onAttackPressed;
 
     protected override void Awake()
     {
@@ -26,7 +27,8 @@ public class InputHandler : Singleton<InputHandler>, PlayerControls.IPlayerActio
 
     public void OnAttack(InputAction.CallbackContext context)
     {
-        
+        if (context.performed)
+            onAttackPressed?.Invoke();
     }
 
     public void OnDodge(InputAction.CallbackContext context)

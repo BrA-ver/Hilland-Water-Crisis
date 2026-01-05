@@ -9,14 +9,20 @@ public class Player : Character
 
     private StateMachine stateMachine;
 
+    PlayerAttackHandler attackHandler;
+
+    public PlayerAttackHandler AttackHandler => attackHandler;
+
     public Vector3 MoveDir => moveDir;
     public bool isDodging;
+    public bool isAttacking;
 
     protected override void Awake()
     {
         base.Awake();
+        attackHandler = GetComponent<PlayerAttackHandler>();
+        attackHandler.SetAnimator(animator);
         stateMachine = GetComponent<StateMachine>();
-        
     }
 
 
@@ -28,6 +34,7 @@ public class Player : Character
 
         
         InputHandler.Instance.onDodgePressed += OnDodge;
+        InputHandler.Instance.onAttackPressed += OnAttack;
 
         stateMachine.SwitchState(new PlayerFreeState(this));
     }
@@ -36,6 +43,7 @@ public class Player : Character
     {
         
         InputHandler.Instance.onDodgePressed -= OnDodge;
+        InputHandler.Instance.onAttackPressed -= OnAttack;
     }
 
     
@@ -68,9 +76,25 @@ public class Player : Character
         stateMachine.SwitchState(new PlayerDodgeState(this));
     }
 
+    private void OnAttack()
+    {
+        if (isAttacking) return;
+
+        isAttacking = true;
+        stateMachine.SwitchState(new PlayerAttackState(this));
+    }
+
+    public void FinishAttack()
+    {
+        isAttacking = false;
+        stateMachine.SwitchState(new PlayerFreeState(this));
+    }
+
     public void FinishDodge()
     {
         isDodging = false;
         stateMachine.SwitchState(new PlayerFreeState(this));
     }
+
+
 }

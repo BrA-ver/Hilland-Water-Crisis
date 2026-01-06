@@ -1,16 +1,18 @@
 using UnityEngine;
 
-[RequireComponent(typeof(CharacterController), typeof(Movement), typeof(CharacterAnimator))]
+[RequireComponent(typeof(Movement), typeof(CharacterAnimator), typeof(Health))]
 public class Character : MonoBehaviour
 {
     protected Movement movement;
     protected CharacterAnimator animator;
     protected GroundCheck ground;
+    protected Health health;
     protected bool onGround;
 
 
     public Movement Movement => movement;
     public CharacterAnimator Animator => animator;
+    public Health Health => health;
     public bool OnGround => onGround;
 
     protected virtual void Awake()
@@ -18,6 +20,7 @@ public class Character : MonoBehaviour
         movement = GetComponent<Movement>();
         ground = GetComponent<GroundCheck>();
         animator = GetComponent<CharacterAnimator>();
+        health = GetComponent<Health>();
     }
 
     protected virtual void Start()
